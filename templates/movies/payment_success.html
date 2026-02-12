@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .ticket-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            padding: 30px 25px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #28a745;
+        }
+
+        .header h2 {
+            margin: 8px 0 5px;
+            color: #333;
+        }
+
+        .header p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .info {
+            font-size: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .value {
+            color: #555;
+        }
+
+        .amount {
+            text-align: center;
+            margin: 20px 0 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .print-btn { background: #28a745; }
+        .home-btn { background: #007bff; }
+
+        #countdown {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        @media print {
+            .btn-group, #countdown {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ticket-card">
+
+    <div class="header">
+        <div class="success-icon">✔</div>
+        <h2>Payment Successful</h2>
+        <p>Your booking is confirmed 🎟</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="info">
+        <div class="info-row">
+            <span class="label">Movie</span>
+            <span class="value">{{ booking.movie.name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Theater</span>
+            <span class="value">{{ booking.theater.name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Seat</span>
+            <span class="value">{{ booking.seat.seat_number }}</span>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="amount">
+        Amount Paid: ₹{{ amount }}
+    </div>
+
+    <div class="btn-group">
+        <button class="btn print-btn" onclick="window.print()">Print</button>
+        <a href="/" class="btn home-btn">Home</a>
+    </div>
+
+    <div id="countdown">Redirecting to home in 10 seconds...</div>
+
+</div>
+
+<script>
+    let timeLeft = 10;
+    const countdown = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdown.innerText = `Redirecting to home in ${timeLeft} seconds...`;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            window.location.href = "/";
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>

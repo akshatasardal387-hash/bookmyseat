@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color:#f4f4f4; padding:20px;">
+
+    <div style="max-width:600px; margin:auto; background:#ffffff; padding:20px; border-radius:8px;">
+        
+        <h2 style="color:#2c3e50; text-align:center;">
+            🎉 Booking Confirmed!
+        </h2>
+
+        <p>Hello <b>{{ user.username }}</b>,</p>
+
+        <p>
+            Your ticket booking has been <b style="color:green;">successfully confirmed</b>.
+        </p>
+
+        <hr>
+
+        <p>
+            <b>🎬 Movie:</b> {{ movie.name }} <br><br>
+            <b>🏢 Theater:</b> {{ theater.name }} <br><br>
+            <b>💺 Seats:</b> {{ seats|join:", " }}
+        </p>
+
+        <hr>
+
+        <p style="text-align:center; font-size:14px;">
+            Enjoy the show 🍿<br>
+            Thank you for booking with us!
+        </p>
+
+        <p style="text-align:center; color:#888; font-size:12px;">
+            © {{ year|default:"2026" }} Movie Booking System
+        </p>
+
+    </div>
+
+</body>
+</html>

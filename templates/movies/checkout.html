@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+
+<h2>Checkout</h2>
+
+<p><strong>Movie:</strong> {{ movie.title }}</p>
+<p><strong>Theater:</strong> {{ theater.name }}</p>
+<p><strong>Seats Selected:</strong> {{ seats|join:", " }}</p>
+<p><strong>Total Amount:</strong> ₹{{ amount }}</p>
+
+<button id="payBtn">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById("payBtn").onclick = function () {
+
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount_in_paise }}",  
+            "currency": "INR",
+            "name": "Movie Ticket Booking",
+            "description": "Payment for movie ticket",
+            "order_id": "{{ order_id }}",  
+            "handler": function (response){
+                fetch("{% url 'payment_success' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        booking_id: "{{ booking_id }}"
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "success") {
+                        window.location.href = "{% url 'booking_success' %}";
+                    }
+                });
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    };
+</script>
+
+</body>
+</html>

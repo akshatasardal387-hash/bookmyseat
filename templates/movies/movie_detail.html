@@ -1,0 +1,48 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card shadow-sm p-4">
+        <div class="row g-4">
+
+            <!-- Movie Poster -->
+            <div class="col-md-4 text-center">
+                <img src="{{ movie.image.url }}"
+                     class="img-fluid rounded shadow"
+                     style="max-height: 420px; object-fit: cover;">
+            </div>
+
+            <!-- Movie Info -->
+            <div class="col-md-8">
+                <h2 class="mb-3">{{ movie.name }}</h2>
+
+                <p class="mb-1"><strong>⭐ Rating:</strong> {{ movie.rating }}</p>
+                <p class="mb-1"><strong>Genre:</strong> {{ movie.genre|default:"N/A" }}</p>
+                <p class="mb-1"><strong>Language:</strong> {{ movie.language|default:"N/A" }}</p>
+                <p class="mb-3"><strong>Cast:</strong> {{ movie.cast }}</p>
+
+                <!-- Trailer -->
+                {% if movie.trailer_url %}
+                <div class="mt-4">
+                    <h5 class="mb-2">🎬 Watch Trailer</h5>
+
+                    <div class="ratio ratio-16x9">
+                        <iframe
+                            src="{{ movie.trailer_url }}"
+                            title="YouTube trailer"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted mt-3">Trailer not available</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
