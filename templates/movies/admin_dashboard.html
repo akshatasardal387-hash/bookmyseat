@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f6f9fc, #e9eff5);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .clock {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+
+        .revenue {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #f2f7ff;
+        }
+
+        @media(max-width: 600px){
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Admin Dashboard</h1>
+    <div class="clock" id="clock"></div>
+
+    <div class="dashboard">
+
+        <!-- Revenue Card -->
+        <div class="card">
+            <h2>Total Revenue</h2>
+            <p class="revenue">₹ {{ total_revenue }}</p>
+        </div>
+
+        <!-- Popular Movies -->
+        <div class="card">
+            <h2>Most Popular Movies</h2>
+            <table>
+                <tr>
+                    <th>Movie</th>
+                    <th>Bookings</th>
+                </tr>
+                {% for movie in popular_movies %}
+                <tr>
+                    <td>{{ movie.movie__name }}</td>
+                    <td>{{ movie.count }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Busy Theaters -->
+        <div class="card">
+            <h2>Busiest Theaters</h2>
+            <table>
+                <tr>
+                    <th>Theater</th>
+                    <th>Bookings</th>
+                </tr>
+                {% for th in busy_theaters %}
+                <tr>
+                    <td>{{ th.theater__name }}</td>
+                    <td>{{ th.count }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById("clock").innerText =
+                now.toLocaleDateString() + " | " + now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Card animation on load
+        window.onload = function () {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, index * 200);
+            });
+        };
+    </script>
+
+</body>
+</html>
