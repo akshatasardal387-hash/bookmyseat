@@ -7,19 +7,16 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
-# ===================== LOAD ENV =====================
 load_dotenv()
 
-# ===================== BASE DIR =====================
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # ===================== BASIC SETTINGS =====================
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG") == "True"
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app']
 
 
 # ===================== APPLICATIONS =====================
@@ -31,11 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Local apps
     'users',
     'movies',
 ]
-
 
 # ===================== MIDDLEWARE =====================
 MIDDLEWARE = [
@@ -50,8 +45,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# ===================== URLS & TEMPLATES =====================
 ROOT_URLCONF = 'bookmyseat.urls'
 
 TEMPLATES = [
@@ -72,24 +65,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bookmyseat.wsgi.application'
 
 
-# ===================== DATABASE (Vercel + Render + Local) =====================
-if os.environ.get("VERCEL"):
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=os.environ.get("DATABASE_URL")
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# ===================== DATABASE (Neon via Vercel) =====================
+DATABASES = {
+    "default": dj_database_url.parse(
+        os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 
 
 # ===================== AUTH =====================
-AUTH_USER_MODEL = 'auth.User'
 LOGIN_URL = '/login/'
 
 
@@ -109,21 +95,20 @@ USE_I18N = True
 USE_TZ = True
 
 
-# ===================== STATIC & MEDIA =====================
+# ===================== STATIC =====================
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 
+# ===================== MEDIA =====================
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# ===================== EMAIL (FROM ENV) =====================
+# ===================== EMAIL =====================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -135,16 +120,15 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-# ===================== STRIPE (FROM ENV) =====================
+# ===================== STRIPE =====================
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 
 
-# ===================== DEFAULT PRIMARY KEY =====================
+# ===================== SECURITY FOR VERCEL =====================
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# ===================== SUPERUSER ENV =====================
-DJANGO_SUPERUSER_USERNAME = os.environ.get("DJANGO_SUPERUSER_USERNAME")
-DJANGO_SUPERUSER_EMAIL = os.environ.get("DJANGO_SUPERUSER_EMAIL")
-DJANGO_SUPERUSER_PASSWORD = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
