@@ -7,9 +7,12 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
+# ===================== LOAD ENV =====================
 load_dotenv()
 
+# ===================== BASE DIR =====================
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # ===================== BASIC SETTINGS =====================
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
     'movies',
 ]
 
+
 # ===================== MIDDLEWARE =====================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -45,6 +49,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# ===================== URLS & TEMPLATES =====================
 ROOT_URLCONF = 'bookmyseat.urls'
 
 TEMPLATES = [
@@ -65,7 +71,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bookmyseat.wsgi.application'
 
 
-# ===================== DATABASE (Neon via Vercel) =====================
+# ===================== DATABASE (Neon / Vercel) =====================
 DATABASES = {
     "default": dj_database_url.parse(
         os.environ.get("DATABASE_URL"),
@@ -99,7 +105,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -116,7 +121,6 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
