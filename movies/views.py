@@ -34,6 +34,28 @@ def movie_list(request):
     })
 
 
+# ===================== MOVIE DETAIL =====================
+def movie_detail(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    theaters = Theater.objects.filter(movie=movie)
+
+    return render(request, 'movies/movie_detail.html', {
+        'movie': movie,
+        'theaters': theaters
+    })
+
+
+# ===================== THEATER LIST =====================
+def theater_list(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    theaters = Theater.objects.filter(movie=movie)
+
+    return render(request, 'movies/theater_list.html', {
+        'movie': movie,
+        'theaters': theaters
+    })
+
+
 # ===================== SEAT BOOKING =====================
 @login_required
 def book_seats(request, theater_id):
@@ -92,7 +114,7 @@ def create_checkout_session(request, booking_id):
     return redirect(session.url)
 
 
-# ===================== PAYMENT SUCCESS (FIXED) =====================
+# ===================== PAYMENT SUCCESS =====================
 def payment_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
@@ -122,9 +144,8 @@ Enjoy your show! 🍿
                 recipient_list=[booking.user.email],
                 fail_silently=False,
             )
-            print("✅ Email sent")
         except Exception as e:
-            print("❌ Email error:", e)
+            print("Email error:", e)
 
     return render(request, "movies/payment_success.html", {
         "booking": booking,
