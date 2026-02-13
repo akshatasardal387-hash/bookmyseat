@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Count
@@ -8,8 +7,9 @@ import stripe
 
 from .models import Movie, Theater, Seat, Booking, Genre, Language
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
 # ===================== MOVIE LIST =====================
 def movie_list(request):
     movies = Movie.objects.select_related('genre', 'language').all()
@@ -31,28 +31,6 @@ def movie_list(request):
         'movies': movies,
         'genres': genres,
         'languages': languages,
-    })
-
-
-# ===================== MOVIE DETAIL =====================
-def movie_detail(request, movie_id):
-    movie = get_object_or_404(Movie, id=movie_id)
-    theaters = Theater.objects.filter(movie=movie)
-
-    return render(request, 'movies/movie_detail.html', {
-        'movie': movie,
-        'theaters': theaters
-    })
-
-
-# ===================== THEATER LIST =====================
-def theater_list(request, movie_id):
-    movie = get_object_or_404(Movie, id=movie_id)
-    theaters = Theater.objects.filter(movie=movie)
-
-    return render(request, 'movies/theater_list.html', {
-        'movie': movie,
-        'theaters': theaters
     })
 
 
@@ -89,7 +67,6 @@ def book_seats(request, theater_id):
 
 
 # ===================== STRIPE CHECKOUT =====================
-# ===================== STRIPE CHECKOUT =====================
 def create_checkout_session(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
@@ -115,11 +92,14 @@ def create_checkout_session(request, booking_id):
     return redirect(session.url)
 
 
-# ===================== PAYMENT SUCCESS =====================
+# ===================== PAYMENT SUCCESS (FIXED) =====================
 def payment_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
-    if not booking.payment_done:
+    session_id = request.GET.get("session_id")
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    if session.payment_status == "paid" and not booking.payment_done:
         booking.payment_done = True
         booking.save()
 
