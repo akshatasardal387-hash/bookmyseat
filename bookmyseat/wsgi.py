@@ -3,7 +3,9 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bookmyseat.settings')
 
-application = get_wsgi_application()
+app = get_wsgi_application()
+handler = app  # <-- VERY IMPORTANT for Vercel
+
 
 # -------- AUTO CREATE SUPERUSER (for Render without shell) --------
 from django.contrib.auth import get_user_model
