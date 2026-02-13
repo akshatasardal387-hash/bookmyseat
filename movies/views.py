@@ -89,8 +89,11 @@ def book_seats(request, theater_id):
 
 
 # ===================== STRIPE CHECKOUT =====================
+# ===================== STRIPE CHECKOUT =====================
 def create_checkout_session(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
+
+    YOUR_DOMAIN = "https://bookmyseat-d5cr.onrender.com"
 
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -105,10 +108,8 @@ def create_checkout_session(request, booking_id):
             'quantity': 1,
         }],
         mode='payment',
-        success_url=request.build_absolute_uri(
-            f'/movies/payment-success/{booking.id}/?session_id={{CHECKOUT_SESSION_ID}}'
-        ),
-        cancel_url=request.build_absolute_uri('/movies/payment-failed/'),
+        success_url=YOUR_DOMAIN + f'/movies/payment-success/{booking.id}/?session_id={{CHECKOUT_SESSION_ID}}',
+        cancel_url=YOUR_DOMAIN + '/movies/payment-failed/',
     )
 
     return redirect(session.url)
