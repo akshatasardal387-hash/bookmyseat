@@ -10,11 +10,11 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ===================== SECURITY =====================
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-secret-key")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 # ===================== APPLICATIONS =====================
 INSTALLED_APPS = [
@@ -62,30 +62,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "bookmyseat.wsgi.application"
 
 # ===================== DATABASE =====================
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
-
-elif os.environ.get("VERCEL"):
-    # Vercel environment
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "/tmp/db.sqlite3",
-        }
-    }
-
-else:
-    # Local environment
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=False,
+    )
+}
 
 # ===================== PASSWORD VALIDATION =====================
 AUTH_PASSWORD_VALIDATORS = []
