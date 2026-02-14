@@ -68,11 +68,22 @@ if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-else:
+
+elif os.environ.get("VERCEL"):
+    # Vercel environment
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "/tmp/db.sqlite3",   # 🔥 Important change for Vercel
+            "NAME": "/tmp/db.sqlite3",
+        }
+    }
+
+else:
+    # Local environment
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
